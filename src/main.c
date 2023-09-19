@@ -2,6 +2,8 @@
 #include "../include/shell.h"
 
 int main(int argc, char** argv){
-    int state = loop();
+    int state = 0;
+    if(argc == 2) printf("opening file (work in progress)...\n");
+    else state = loop();
     return state;
 }

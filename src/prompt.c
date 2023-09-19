@@ -26,7 +26,6 @@ char* readline(){
                 case 'B':
                 case 'C':
                 case 'D':
-                    printf("\033[D");
                     pos--;
                     break;
             }

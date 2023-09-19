@@ -11,16 +11,13 @@ objs=src/main.o \
 	 $(src)shell.o \
 	 $(src)file.o \
 	 $(src)prompt.o \
-	 $(src)tokenizer.o \
+	 $(src)parser.o \
 
 all: compile clean
 
 compile: $(objs)
 	@[ -d "$(build)" ] || { mkdir "$(build)"; }
 	$(out)$(target) $(objs) $(flags)
-
-%.o: $(src)%.c $(icd)%.h
-	$(obj)$(src)%.c
 
 example%:
 	$(target) $@.txt
