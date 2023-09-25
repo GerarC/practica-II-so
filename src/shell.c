@@ -19,13 +19,8 @@ int loop(){
             continue;
         }
 
-        /* if (strncmp(cmd_str, "cd", 2) == 0) {
-            fprintf(stderr, "wish: cd: missing argument\n");
-            continue;
-        } */
-
-        if (strncmp(cmd_str, "cd ", 3) == 0) {
-            token = strtok(cmd_str + 3, " \t\n");
+        if (strncmp(cmd_str, "cd", 2) == 0) {
+            token = strtok(cmd_str + 2, " \t\n");
             if (token == NULL) {
                 fprintf(stderr, "wish: cd: missing argument\n");
             } else {
