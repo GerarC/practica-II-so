@@ -104,7 +104,10 @@ char* readline(){
             free(buffer.b);
             return NULL;
         }
-        else if (c == KEY_ENTER) break;
+        else if (c == KEY_ENTER){
+            putchar('\n');
+            break;
+        }
         else if (!iscntrl(c) && c < 128) insert_char(&buffer, c);
         else if (c == BACKSPACE) delete_char(&buffer);
     }
