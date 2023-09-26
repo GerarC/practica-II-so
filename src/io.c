@@ -91,9 +91,9 @@ char* readline(){
     /* int hist = 0; */
 
     // Buffer initialization
-    line_buffer buffer = {NULL, 0, MAX_IMPUT, 0};
-    buffer.b = (char*)malloc(sizeof(char)*MAX_IMPUT);
-    for(int i = 0; i < MAX_IMPUT; i ++) buffer.b[i] = '\0';
+    line_buffer ln_buffer = {NULL, 0, MAX_IMPUT, 0};
+    ln_buffer.b = (char*)malloc(sizeof(char)*MAX_IMPUT);
+    for(int i = 0; i < MAX_IMPUT; i ++) ln_buffer.b[i] = '\0';
 
     /* char* tempCh = NULL; */
     prompt();
@@ -101,15 +101,21 @@ char* readline(){
         int c = readKey();
         if(c == -1){
             putchar('\n');
-            free(buffer.b);
+            free(ln_buffer.b);
             return NULL;
         }
         else if (c == KEY_ENTER){
             putchar('\n');
             break;
         }
-        else if (!iscntrl(c) && c < 128) insert_char(&buffer, c);
-        else if (c == BACKSPACE) delete_char(&buffer);
+        else if(c == ARROW_LEFT){
+            if(ln_buffer.cursor){
+                ln_buffer.cursor--;
+                cursorPrev(1);
+            }
+        }
+        else if (!iscntrl(c) && c < 128) insert_char(&ln_buffer, c);
+        else if (c == BACKSPACE) delete_char(&ln_buffer);
     }
-    return buffer.b;
+    return ln_buffer.b;
 }

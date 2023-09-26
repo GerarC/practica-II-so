@@ -2,6 +2,7 @@
 #include "../include/io.h"
 #include "../include/parser.h"
 #include "../include/command.h"
+#include "../include/builtin.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,7 +31,7 @@ int loop(){
     while (running) {
         current_command = init_command_struct();
         cmd_str = readline();
-        if (!strcmp(cmd_str, "exit")) running = 0;
+        if (!strcmp(cmd_str, "exit")) exec_exit();
 
         example(current_command);
 

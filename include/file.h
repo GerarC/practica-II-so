@@ -1,7 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-#define MAX_FILE_SIZE 1024
+#define max_file_size 1024
 
 char* read_file(char* dir);
 void write_file(char* dir, char** lines);
