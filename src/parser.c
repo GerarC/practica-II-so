@@ -21,19 +21,27 @@ void string_to_command(Command *command, char *cmd_str){
         token = strtok(aux, " ");
 
         while(token != NULL){
-            size = strlen(token);
+            size = strlen(token) + 1;
             if (size < 0) return;
             if(argc < MAX_ARGV_NUM){
                 command->argv_list[i][argc] = (char*) malloc(sizeof(char)*size);
                 strlcpy(command->argv_list[i][argc], token, size);
             } else break;
             argc++;
+            printf("\ntoken: %s", token);
             token = strtok(NULL, " ");
         }
         command->argc_nums[i] =argc;
         free(aux);
     }
     free(command_list);
+    for(int i = 0; i< command->num_cmd; i++){
+        printf("\nCommand: ");
+        for(int j = 0; j < command->argc_nums[i]; j++){
+            printf("%s ", command->argv_list[i][j]);;
+        }
+    }
+    printf("\n");
 }
 
 char** split_commands_by_ampersand(char* input, int* num_cmd){
@@ -51,7 +59,7 @@ char** split_commands_by_ampersand(char* input, int* num_cmd){
 
     command = strtok(input_copy, "&");
     while(command != NULL){
-        size = strlen(command);
+        size = strlen(command) + 1;
         if (size < 0) return NULL;
         if(amount < MAX_CMD_NUM){
             command_list[amount] = (char*) malloc(sizeof(char)*size);
@@ -64,5 +72,3 @@ char** split_commands_by_ampersand(char* input, int* num_cmd){
     free(input_copy);
     return command_list;
 }
-
-

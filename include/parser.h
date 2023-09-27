@@ -17,7 +17,7 @@
  * Output:
  *  char** argv: splitted string. 
  */
-char** tokenizer(char* input, int* argc);
+void tokenizer(char** dest, char* input, int* argc);
 
 char** split_commands_by_ampersand(char* input, int* num_cmd);
 
