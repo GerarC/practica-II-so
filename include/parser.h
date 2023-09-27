@@ -19,7 +19,7 @@
  */
 char** tokenizer(char* input, int* argc);
 
-char*** split_pipes(char* input, int* num_pipes);
+char** split_commands_by_ampersand(char* input, int* num_cmd);
 
 void string_to_command(Command* command, char* cmd_str);
 

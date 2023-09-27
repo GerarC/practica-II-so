@@ -105,6 +105,7 @@ char* readline(){
             return NULL;
         }
         else if (c == KEY_ENTER){
+            /* ln_buffer.b[ln_buffer.cursor] = ' '; */
             putchar('\n');
             break;
         }
