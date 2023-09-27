@@ -1,9 +1,11 @@
-#ifndef WISH_H
-#define WISH_H
+#ifndef SHELL_H
+#define SHELL_H
+#include "../include/global.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 int loop();
+void shell_initialization();
 
-#endif//WISH_H
+#endif//SHELL_H

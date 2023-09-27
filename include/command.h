@@ -10,7 +10,7 @@
  */
 typedef struct Command_struct{
     int num_cmd; //num of commands
-    int argc_nums[MAX_CMD_NUM]; //num of args of each command
+    int argcs[MAX_CMD_NUM]; //num of args of each command
     char*** argv_list;//List of the argv of each command
 } Command;
 

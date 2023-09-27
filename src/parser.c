@@ -5,49 +5,36 @@
 #include <string.h>
 
 void string_to_command(Command *command, char *cmd_str){
-    char** command_list = split_commands_by_ampersand(cmd_str, &command->num_cmd);
-    char* aux;
-    char* token;
+    char** command_list = string_splitter(cmd_str, &command->num_cmd, "&", MAX_CMD_NUM);
+    char** sub_command;
     int argc;
-    int size = 0;
 
     for(int i = 0; i < command->num_cmd; i++){
         argc = 0;
-        size = strlen(command_list[i]) + 1;
-        aux = (char*) malloc(sizeof(char)*size);
-        
-        if (size < 0) return;
-        strlcpy(aux, command_list[i], size); // copying the string because of the delimiter
-        token = strtok(aux, " ");
+        sub_command = string_splitter(command_list[i], &argc, " ", MAX_ARGV_NUM);
 
-        while(token != NULL){
-            size = strlen(token) + 1;
-            if (size < 0) return;
-            if(argc < MAX_ARGV_NUM){
-                command->argv_list[i][argc] = (char*) malloc(sizeof(char)*size);
-                strlcpy(command->argv_list[i][argc], token, size);
-            } else break;
-            argc++;
-            printf("\ntoken: %s", token);
-            token = strtok(NULL, " ");
-        }
-        command->argc_nums[i] =argc;
-        free(aux);
+        for(int j = 0; j< argc; j++) printf("holi: %s", sub_command[i]);
+
+        command->argv_list[i] = sub_command;
+        command->argcs[i] = argc;
     }
     free(command_list);
     for(int i = 0; i< command->num_cmd; i++){
         printf("\nCommand: ");
-        for(int j = 0; j < command->argc_nums[i]; j++){
+        for(int j = 0; j < command->argcs[i]; j++){
             printf("%s ", command->argv_list[i][j]);;
         }
     }
     printf("\n");
+
 }
 
-char** split_commands_by_ampersand(char* input, int* num_cmd){
+char** string_splitter(char* input, int* argc, char* sep, int max_splits){
     if(input == NULL) return NULL;
-    char** command_list = (char**) malloc(sizeof(char*)*MAX_CMD_NUM);
-    char* command;
+    if(argc == NULL) return NULL;
+    if(sep == NULL) return NULL;
+    char** splitted_str = (char**) malloc(sizeof(char*)*max_splits);
+    char* token;
     char* input_copy;
     int size = 0;
     int amount = 0;
@@ -57,18 +44,18 @@ char** split_commands_by_ampersand(char* input, int* num_cmd){
     if (size < 0) return NULL;
     strlcpy(input_copy, input, size);
 
-    command = strtok(input_copy, "&");
-    while(command != NULL){
-        size = strlen(command) + 1;
+    token = strtok(input_copy, sep);
+    while(token != NULL){
+        size = strlen(token) + 1;
         if (size < 0) return NULL;
         if(amount < MAX_CMD_NUM){
-            command_list[amount] = (char*) malloc(sizeof(char)*size);
-            strlcpy(command_list[amount], command, size);
+            splitted_str[amount] = (char*) malloc(sizeof(char)*size);
+            strlcpy(splitted_str[amount], token, size);
         }else break;
-        command = strtok(NULL, "&");
+        token = strtok(NULL, sep);
         amount++;
     }
-    *num_cmd = amount;
+    *argc = amount;
     free(input_copy);
-    return command_list;
+    return splitted_str;
 }
