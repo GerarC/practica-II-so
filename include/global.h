@@ -8,7 +8,6 @@
 
 extern int path_len;
 extern char *path[MAX_PATH_SIZE];
-extern char current_dir[MAX_DIR_SIZE];
 
 
 #endif//GLOBAL_H
