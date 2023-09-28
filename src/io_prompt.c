@@ -32,8 +32,8 @@ int readKey(){
     if(number_read == -1) return number_read;
     if(ch == KEY_ESCAPE){
         char sequence[2];
-        if(getch(&sequence[0], 0, 1) == EOF) return KEY_ESCAPE;
-        if(getch(&sequence[1], 0, 1) == EOF) return KEY_ESCAPE;
+        if(getch(&sequence[0], 1, 0) == EOF) return KEY_ESCAPE;
+        if(getch(&sequence[1], 1, 0) == EOF) return KEY_ESCAPE;
         if(sequence[0] == '['){
             if(sequence[1] >= 'A' && sequence[1] <= 'H'){
                 switch(sequence[1]){
@@ -109,11 +109,13 @@ char* readline(){
             putchar('\n');
             break;
         }
-        else if(c == ARROW_LEFT){
-            if(ln_buffer.cursor){
-                ln_buffer.cursor--;
-                cursorPrev(1);
-            }
+        else if(c == ARROW_LEFT && ln_buffer.cursor){
+            ln_buffer.cursor--;
+            cursorPrev(1);
+        }
+        else if(c == ARROW_RIGHT && ln_buffer.cursor < ln_buffer.len){
+            ln_buffer.cursor++;
+            cursorNext(1);
         }
         else if (!iscntrl(c) && c < 128) insert_char(&ln_buffer, c);
         else if (c == BACKSPACE) delete_char(&ln_buffer);

@@ -32,7 +32,7 @@ int loop(){
         string_to_command(command, cmd_str);
         if (!strcmp(command->argv_list[0][0], "exit")) exec_exit();
         else if (!strcmp(command->argv_list[0][0], "cd")){
-            if(command->argcs[0] < 2) fprintf(stderr, "cd: missing argument.\n");
+            if(command->argcs[0] < 2) fprintf(stderr, "wish: cd: missing argument.\n");
             else change_directory(command->argv_list[0][1]);
             continue;
         }
