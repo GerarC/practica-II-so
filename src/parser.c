@@ -12,21 +12,10 @@ void string_to_command(Command *command, char *cmd_str){
     for(int i = 0; i < command->num_cmd; i++){
         argc = 0;
         sub_command = string_splitter(command_list[i], &argc, " ", MAX_ARGV_NUM);
-
-        for(int j = 0; j< argc; j++) printf("holi: %s", sub_command[i]);
-
         command->argv_list[i] = sub_command;
         command->argcs[i] = argc;
     }
     free(command_list);
-    for(int i = 0; i< command->num_cmd; i++){
-        printf("\nCommand: ");
-        for(int j = 0; j < command->argcs[i]; j++){
-            printf("%s ", command->argv_list[i][j]);;
-        }
-    }
-    printf("\n");
-
 }
 
 char** string_splitter(char* input, int* argc, char* sep, int max_splits){

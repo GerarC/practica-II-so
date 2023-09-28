@@ -8,13 +8,14 @@
 /*
  *Struct which represents the command struct with its argv and pipelines.
  */
-typedef struct Command_struct{
+typedef struct __Command_struct{
     int num_cmd; //num of commands
     int argcs[MAX_CMD_NUM]; //num of args of each command
     char*** argv_list;//List of the argv of each command
 } Command;
 
 Command* init_command_struct();
+void print_command(Command* command);
 void free_command_struct(Command* command);
 
 
