@@ -14,3 +14,13 @@ Command* init_command_struct(){
 void free_command_struct(Command* command){
     free(command);
 }
+
+void print_command(Command* command){
+    for(int i = 0; i< command->num_cmd; i++){
+        printf("Command: ");
+        for(int j = 0; j < command->argcs[i]; j++){
+            printf("%s ", command->argv_list[i][j]);
+        }
+    }
+    printf("\n");
+}

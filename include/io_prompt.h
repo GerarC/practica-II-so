@@ -4,8 +4,8 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define DEFAULT_PROMPT "wish"
-#define PROMPT_SYMBOL ">"
+#define DEFAULT_PROMPT "\033[1mwish"
+#define PROMPT_SYMBOL ">\033[0m"
 #define MAX_IMPUT 256
 #define KEY_ENTER 0x000A
 #define KEY_ESCAPE 0x001B

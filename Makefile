@@ -10,8 +10,9 @@ target=$(build)$(name)
 objs=src/main.o \
 	 $(src)shell.o \
 	 $(src)file.o \
-	 $(src)io.o \
+	 $(src)io_prompt.o \
 	 $(src)command.o \
+	 $(src)execution.o \
 	 $(src)builtin.o \
 	 $(src)parser.o \
 
