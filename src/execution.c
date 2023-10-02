@@ -11,13 +11,13 @@
 int execute_command(char** command){
     int fd = -1; 
     char **cmd_path = path;
-    char command_path[MAX_PATH_SIZE];
+    char command_path[PATH_SIZE];
     pid_t subprocess;
 
 
     for(int i = 0; i<path_len && (strcmp(*cmd_path, "") != 0) && fd != 0; i++) {
-        strlcpy(command_path, *cmd_path++, MAX_PATH_SIZE);
-        strlcat(command_path, command[0], MAX_PATH_SIZE);
+        strlcpy(command_path, *cmd_path++, PATH_SIZE);
+        strlcat(command_path, command[0], PATH_SIZE);
         fd = access(command_path, X_OK);
     }
 

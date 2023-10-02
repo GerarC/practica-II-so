@@ -2,10 +2,7 @@
 #define TOKERNIZER_H
 
 #include "../include/command.h"
-
-#define MAX_INPUT_SIZE 256
-#define MAX_CMD_SIZE 16
-#define MAX_ARGV 16
+#include "../include/global.h"
 
 void string_to_command(Command* command, char* cmd_str);
 

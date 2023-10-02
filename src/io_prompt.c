@@ -14,7 +14,7 @@ void prompt(){
 int getch(char *c, int vmin, int vtime){
     int ch = 0;
     tcgetattr(0, &old_term); // Get the initial config
-    memcpy(&term, &old_term, sizeof(term))  ;
+    memcpy(&term, &old_term, sizeof(term));
     term.c_lflag &= ~(ICANON | ECHO); // turn off echo and line by line read
     term.c_cc[VMIN] = vmin;
     term.c_cc[VTIME] = vtime;
@@ -87,15 +87,15 @@ void delete_char(line_buffer * lbuf){
 }
 
 char* readline(){
-    /* int previousSize = 0; */
-    /* int hist = 0; */
+    static int previous_buffer_size = 0;
+    static int hist = 0;
+    char* temp_char;
 
     // Buffer initialization
-    line_buffer ln_buffer = {NULL, 0, MAX_IMPUT, 0};
-    ln_buffer.b = (char*)malloc(sizeof(char)*MAX_IMPUT);
-    for(int i = 0; i < MAX_IMPUT; i ++) ln_buffer.b[i] = '\0';
+    line_buffer ln_buffer = {NULL, 0, INPUT_SIZE, 0};
+    ln_buffer.b = (char*)malloc(sizeof(char)*INPUT_SIZE);
+    for(int i = 0; i < INPUT_SIZE; i ++) ln_buffer.b[i] = '\0';
 
-    /* char* tempCh = NULL; */
     prompt();
     while(1){
         int c = readKey();
@@ -105,8 +105,9 @@ char* readline(){
             return NULL;
         }
         else if (c == KEY_ENTER){
-            /* ln_buffer.b[ln_buffer.cursor] = ' '; */
             putchar('\n');
+            previous_buffer_size = ln_buffer.len;
+            push(history, ln_buffer.b);
             break;
         }
         else if(c == ARROW_LEFT && ln_buffer.cursor){
@@ -116,6 +117,32 @@ char* readline(){
         else if(c == ARROW_RIGHT && ln_buffer.cursor < ln_buffer.len){
             ln_buffer.cursor++;
             cursorNext(1);
+        }
+        else if (c == ARROW_UP){ // History up
+            if(previous_buffer_size != 0 && hist <= history->top){
+                hist++;
+                if (hist > 0){
+                    int idx = history->top - hist + 1;
+                    for(int i = 0; i < previous_buffer_size; i++) delete_char(&ln_buffer);
+                    temp_char = history->base[idx];
+                    previous_buffer_size = strlen(temp_char);
+                    for(int i = 0; i < previous_buffer_size; i++) insert_char(&ln_buffer, temp_char[i]);
+                }
+            }
+        }
+        else if (c == ARROW_DOWN){ // History down
+            if(previous_buffer_size != 0 && hist >= 0){
+                if(hist) hist--;
+                if (hist > 0){
+                    int idx = history->top - hist + 1;
+                    for(int i = 0; i < previous_buffer_size; i++) delete_char(&ln_buffer);
+                    temp_char = history->base[idx];
+                    previous_buffer_size = strlen(temp_char);
+                    for(int i = 0; i < previous_buffer_size; i++) insert_char(&ln_buffer, temp_char[i]);
+                }
+                else if (!hist) for(int i = 0; i < previous_buffer_size; i++) 
+                    delete_char(&ln_buffer);
+            }
         }
         else if (!iscntrl(c) && c < 128) insert_char(&ln_buffer, c);
         else if (c == BACKSPACE) delete_char(&ln_buffer);
