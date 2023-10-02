@@ -18,7 +18,7 @@ void string_to_command(Command* command, char* cmd_str);
  * Output:
  *  char** argv: splitted string. 
  */
-char** string_splitter(char* input, int* argc, char* sep, int max_splits);
+char** string_splitter(char* input, int* argc, int* is_redirected, char* sep, int max_splits);
 
 // It's not necessary but I'll save it because of yes
 char** split_commands_by_ampersand(char* input, int* num_cmd);
