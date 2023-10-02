@@ -14,6 +14,7 @@ objs=src/main.o \
 	 $(src)command.o \
 	 $(src)execution.o \
 	 $(src)builtin.o \
+	 $(src)stack.o \
 	 $(src)parser.o \
 
 all: compile clean

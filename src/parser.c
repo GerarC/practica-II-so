@@ -5,13 +5,13 @@
 #include <string.h>
 
 void string_to_command(Command *command, char *cmd_str){
-    char** command_list = string_splitter(cmd_str, &command->num_cmd, "&", MAX_CMD_NUM);
+    char** command_list = string_splitter(cmd_str, &command->num_cmd, "&", CMD_NUM);
     char** sub_command;
     int argc;
 
     for(int i = 0; i < command->num_cmd; i++){
         argc = 0;
-        sub_command = string_splitter(command_list[i], &argc, " ", MAX_ARGV_NUM);
+        sub_command = string_splitter(command_list[i], &argc, " ", ARGV_NUM);
         command->argv_list[i] = sub_command;
         command->argcs[i] = argc;
     }
@@ -37,7 +37,7 @@ char** string_splitter(char* input, int* argc, char* sep, int max_splits){
     while(token != NULL){
         size = strlen(token) + 1;
         if (size < 0) return NULL;
-        if(amount < MAX_CMD_NUM){
+        if(amount < CMD_NUM){
             splitted_str[amount] = (char*) malloc(sizeof(char)*size);
             strlcpy(splitted_str[amount], token, size);
         }else break;

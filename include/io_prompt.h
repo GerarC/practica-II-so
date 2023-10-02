@@ -1,12 +1,13 @@
-#ifndef IO_H
-#define IO_H
+#ifndef IO_PROMPT_H
+#define IO_PROMPT_H
+
+#include "../include/global.h"
 #include <ctype.h>
 #include <termios.h>
 #include <unistd.h>
 
 #define DEFAULT_PROMPT "\033[1mwish"
 #define PROMPT_SYMBOL ">\033[0m"
-#define MAX_IMPUT 256
 #define KEY_ENTER 0x000A
 #define KEY_ESCAPE 0x001B
 
@@ -41,4 +42,4 @@ char* readline();
 
 void output(char** data);
 
-#endif//IO_H
+#endif//IO_PROMPT_H
