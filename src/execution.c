@@ -3,13 +3,17 @@
 #include <bsd/string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
 #include <sys/wait.h>
 
 void execute_command(Command* command){
         for (int i = 0; i < command->num_cmd; i++) {
-            if (!strcmp(command->argv_list[i][0], "exit")) exec_exit();
+            if (!strcmp(command->argv_list[i][0], "exit")){
+                if (command->argcs[i] > 1) PRINT_ERROR();
+                else exec_exit();
+            }
             else if (!strcmp(command->argv_list[i][0], "cd")) {
                 if (command->argcs[i] < 2) PRINT_ERROR();
                 else change_directory(command->argv_list[i][1]);
@@ -58,7 +62,7 @@ int execute_and_redirect_subcommand(char** subcommand, int argc){
 
     int fd = -1; 
     char** cmd_path = path;
-    char* command_argvs[argc - 2];
+    char** command_argvs;
     char command_path[PATH_SIZE];
     char* redirect_path;
     pid_t subprocess;
@@ -75,23 +79,31 @@ int execute_and_redirect_subcommand(char** subcommand, int argc){
     redirect_path = expand_path(subcommand[argc - 1]);
 
     if(fd == 0){
-        for(int i = 0; i < argc - 2; i++){
-            command_argvs[i] = subcommand[i];
-            printf("argv %s", command_argvs[i]);
-        }
-        printf("\n");
-        if(!is_dir(redirect_path)){
-            subprocess = fork();
-            if(subprocess == 0){
-                execvp(command_path, subcommand);
-            }
-            else if(subprocess < 0) PRINT_ERROR();
-            else wait(NULL);
-        }
-        else{
+        if(is_dir(redirect_path)){
             PRINT_ERROR();
             return -1;
         }
+        command_argvs = (char**) malloc(argc - 2);
+        for(int i = 0; i < argc - 2; i++) command_argvs[i] = subcommand[i];
+        subprocess = fork();
+        if(subprocess == 0){
+            int outfile = open(redirect_path, O_RDWR | O_CREAT | O_APPEND, 0666);
+            int saved_out = dup(1);
+            if(outfile == -1 || dup2(outfile, 1 == -1)){
+                PRINT_ERROR();
+                free(command_argvs);
+                return -1;
+            }
+            execvp(command_path, command_argvs);
+
+            fflush(stdout);
+            close(outfile);
+            dup2(saved_out, 1);
+            close(saved_out);
+        }
+        else if(subprocess < 0) PRINT_ERROR();
+        else wait(NULL);
+        free(command_argvs);
     }else PRINT_ERROR();
 
     free(redirect_path);
