@@ -88,8 +88,8 @@ int execute_and_redirect_subcommand(char** subcommand, int argc){
         subprocess = fork();
         if(subprocess == 0){
             int outfile = open(redirect_path, O_RDWR | O_CREAT | O_APPEND, 0666);
-            int saved_out = dup(1);
-            if(outfile == -1 || dup2(outfile, 1 == -1)){
+            int saved_out = dup(fileno(stdout));
+            if(outfile == -1 || dup2(outfile, fileno(stdout)) == -1){
                 PRINT_ERROR();
                 free(command_argvs);
                 return -1;
@@ -98,7 +98,7 @@ int execute_and_redirect_subcommand(char** subcommand, int argc){
 
             fflush(stdout);
             close(outfile);
-            dup2(saved_out, 1);
+            dup2(saved_out, fileno(stdout));
             close(saved_out);
         }
         else if(subprocess < 0) PRINT_ERROR();
