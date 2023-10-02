@@ -9,6 +9,7 @@
 typedef struct __Command_struct{
     int num_cmd; //num of commands
     int argcs[CMD_NUM]; //num of args of each command
+    int is_redirected[CMD_NUM]; //num of args of each command
     char*** argv_list;//List of the argv of each command
 } Command;
 

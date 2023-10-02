@@ -35,19 +35,7 @@ int loop(){
 
         push(history, cmd_str);
         string_to_command(command, cmd_str);
-
-        for (int i = 0; i < command->num_cmd; i++) {
-            if (!strcmp(command->argv_list[i][0], "exit")) exec_exit();
-            else if (!strcmp(command->argv_list[i][0], "cd")) {
-                if (command->argcs[i] < 2) {
-                    fprintf(stderr, "wish: cd: missing argument.\n");
-                } else {
-                    change_directory(command->argv_list[i][1]);
-                }
-            } else {
-                execute_command(command->argv_list[i]);
-            }
-        }
+        execute_command(command);
         
         free(cmd_str);
         free_command_struct(command);
