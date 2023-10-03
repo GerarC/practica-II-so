@@ -3,7 +3,7 @@
 
 #include "../include/stack.h"
 
-#define PATH_SIZE 32
+#define PATH_SIZE 16
 #define DIR_SIZE 256
 #define STACK_SIZE 128
 #define DIR_STACK 128
@@ -16,7 +16,7 @@
 
 extern int path_len;
 extern int running;
-extern char *path[PATH_SIZE];
+extern char** path;
 extern Stack* history;
 
 
