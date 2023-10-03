@@ -14,7 +14,7 @@ void string_to_command(Command *command, char *cmd_str){
         argc = 0;
         is_redirected = 0;
         sub_command = string_splitter(command_list[i], &argc, &is_redirected, " ", ARGV_NUM);
-        command->argv_list[i] = sub_command;
+        command->subcommands[i] = sub_command;
         command->is_redirected[i] = is_redirected;
         command->argcs[i] = argc;
     }
@@ -22,9 +22,7 @@ void string_to_command(Command *command, char *cmd_str){
 }
 
 char** string_splitter(char* input, int* argc, int* is_redirected,char* sep, int max_splits){
-    if(input == NULL) return NULL;
-    if(argc == NULL) return NULL;
-    if(sep == NULL) return NULL;
+    if(input == NULL || argc == NULL || sep == NULL) return NULL;
     char** splitted_str = (char**) malloc(sizeof(char*)*max_splits);
     char* token;
     char* input_copy;

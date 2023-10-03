@@ -10,17 +10,19 @@
 
 void execute_command(Command* command){
     for (int i = 0; i < command->num_cmd; i++) {
-        if (!strcmp(command->argv_list[i][0], "exit")){
+        if(!command->argcs[i]) return;
+        if (!strcmp(command->subcommands[i][0], "exit")){
             if (command->argcs[i] > 1) PRINT_ERROR();
             else exec_exit();
         }
-        else if (!strcmp(command->argv_list[i][0], "cd")) {
+        else if (!strcmp(command->subcommands[i][0], "cd")) {
             if (command->argcs[i] < 2) PRINT_ERROR();
-            else change_directory(command->argv_list[i][1]);
+            else change_directory(command->subcommands[i][1]);
         } else {
-            if(command->is_redirected[i])
-                execute_and_redirect_subcommand(command->argv_list[i], command->argcs[i]);
-            else execute_subcommand(command->argv_list[i]);
+            if(command->is_redirected[i]) execute_and_redirect_subcommand(
+                    command->subcommands[i],
+                    command->argcs[i]);
+            else execute_subcommand(command->subcommands[i]);
         }
     }
 }
@@ -43,7 +45,7 @@ int execute_subcommand(char** subcommand){
     if(fd == 0){
         subprocess = fork();
         if(subprocess == 0) execvp(command_path, subcommand);
-        else if(subprocess < 0) perror("Wish\n");
+        else if(subprocess < 0) PRINT_ERROR();
         else wait(NULL);
     }else PRINT_ERROR();
 
