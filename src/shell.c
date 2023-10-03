@@ -24,22 +24,43 @@ void shell_initialization(){
     running = -1;
 };
 
-int loop(){
+int loop(int argc, char** argv){
     // Needed variables
     Command* command;
-    char* cmd_str;
+    char* cmd_str = NULL;
+    FILE *input = stdin;
+    size_t len = 0;
+    ssize_t read;
+
+    if (argc == 2) {
+        input = fopen(argv[1], "r");
+        if (!input) {
+            PRINT_ERROR();
+        }
+    }
 
     while (running) {
         command = init_command_struct();
-        cmd_str = readline();
+        if (argc == 2) {
+            read = getline(&cmd_str, &len, input);
+            if (read == -1) break; 
+            if (cmd_str[read - 1] == '\n') cmd_str[read - 1] = '\0';
+        } else {
+            cmd_str = readline();
+            printf("%s\n", cmd_str);
+        }
+
+        printf("%s\n", cmd_str);
 
         push(history, cmd_str);
         string_to_command(command, cmd_str);
         execute_command(command);
         
         free(cmd_str);
+        cmd_str = NULL;
         free_command_struct(command);
     }
     free_stack(history);
-    return running;
+    if (input != stdin) fclose(input);
+    return 0;
 }
