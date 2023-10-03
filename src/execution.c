@@ -10,14 +10,14 @@
 
 void __seek_command_in_path(char* command, char* command_path, int* fd){
     char **cmd_path = path;
-    for(int i = 0; i<path_len && (strcmp(*cmd_path, "") != 0) && fd != 0; i++) {
-        strlcpy(command_path, *cmd_path, DIR_SIZE);
+    printf("path: %s, command_path: %s\n", cmd_path[0], command_path);
+    for(int i = 0; i<path_len && (strcmp(cmd_path[i], "") != 0) && fd != 0; i++) {
+        strlcpy(command_path, cmd_path[i], DIR_SIZE);
         int len = strlen(command_path);
         if(command_path[len - 1] != '/') strlcat(command_path, "/", DIR_SIZE);
         strlcat(command_path, command, DIR_SIZE);
         *fd = access(command_path, X_OK);
         if(*fd == 0) break;
-        cmd_path++;
     }
 }
 

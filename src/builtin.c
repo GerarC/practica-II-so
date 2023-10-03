@@ -27,9 +27,6 @@ void exec_path(char **argv, int argc){
         PRINT_ERROR();
         return;
     }
-    path[0] = "";
-    path[1] = "";
-    path[2] = "";
     path_len = 0;
     for(int i = 1; i < argc; i++){
         char* real_dir = expand_path(argv[i]);
@@ -38,7 +35,8 @@ void exec_path(char **argv, int argc){
             PRINT_ERROR();
             return;
         }
-        path[i] = real_dir;
+        path[i - 1] = real_dir;
+        path_len++;
     }
 
 }
