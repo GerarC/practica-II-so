@@ -32,6 +32,10 @@ int loop(int argc, char** argv){
     size_t len = 0;
     ssize_t read;
 
+    if (argc > 2) {
+        PRINT_ERROR();
+        return 1;
+    }
     if (argc == 2) {
         input = fopen(argv[1], "r");
         if (!input) {
