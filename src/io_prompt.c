@@ -52,38 +52,39 @@ int readKey(){
 int render_buf(line_buffer* lbuf){
     int shift = 0;
     for(int i = lbuf->cursor; i <= lbuf->len; i++, shift++){
-        if(lbuf->b[i]) putchar(lbuf->b[i]);
+        if(lbuf->line[i]) putchar(lbuf->line[i]);
     }
     return shift;
 }
 
 void insert_char(line_buffer* lbuf, char c){
     if(lbuf == NULL)  return;
-
     if(lbuf->len >= lbuf->size - 1){
         return;
     }
-    for(int i = lbuf->len; i >= lbuf->cursor; i--) lbuf->b[i + 1] = lbuf->b[i];
+    for(int i = lbuf->len; i >= lbuf->cursor; i--)
+        lbuf->line[i + 1] = lbuf->line[i];
     lbuf->len++;
-    lbuf->b[lbuf->cursor] = c;
+    lbuf->line[lbuf->cursor] = c;
     render_buf(lbuf);
     lbuf->cursor++;
-    if(lbuf->len - lbuf->cursor)cursorPrev(lbuf->len - lbuf->cursor);
+    if(lbuf->len - lbuf->cursor) cursorPrev(lbuf->len - lbuf->cursor);
 }
 
 void delete_char(line_buffer * lbuf){
     if(lbuf == NULL) return;
-    if(lbuf->b == NULL) return;
+    if(lbuf->line == NULL) return;
     if(lbuf->cursor == 0) return;
     lbuf->cursor--;
-    for(int i = lbuf->cursor; i < lbuf->len; i++) lbuf->b[i] = lbuf->b[i + 1];
-    lbuf->b[lbuf->len] = ' '; 
+    for(int i = lbuf->cursor; i < lbuf->len; i++)
+        lbuf->line[i] = lbuf->line[i + 1];
+    lbuf->line[lbuf->len] = ' '; 
     if(lbuf->cursor>=0) cursorPrev(1);
     render_buf(lbuf);
-    lbuf->b[lbuf->len] = '\0'; 
+    lbuf->line[lbuf->len] = '\0'; 
     if(lbuf->cursor>=0) cursorPrev(1);
     lbuf->len--;
-    if(lbuf->len - lbuf->cursor)cursorPrev(lbuf->len - lbuf->cursor);
+    if(lbuf->len - lbuf->cursor) cursorPrev(lbuf->len - lbuf->cursor);
 }
 
 char* readline(){
@@ -93,21 +94,21 @@ char* readline(){
 
     // Buffer initialization
     line_buffer ln_buffer = {NULL, 0, INPUT_SIZE, 0};
-    ln_buffer.b = (char*)malloc(sizeof(char)*INPUT_SIZE);
-    for(int i = 0; i < INPUT_SIZE; i ++) ln_buffer.b[i] = '\0';
+    ln_buffer.line = (char*)malloc(sizeof(char)*INPUT_SIZE);
+    for(int i = 0; i < INPUT_SIZE; i ++) ln_buffer.line[i] = '\0';
 
     prompt();
     while(1){
         int c = readKey();
         if(c == -1){
             putchar('\n');
-            free(ln_buffer.b);
+            free(ln_buffer.line);
             return NULL;
         }
         else if (c == KEY_ENTER){
             putchar('\n');
             previous_buffer_size = ln_buffer.len;
-            push(history, ln_buffer.b);
+            push(history, ln_buffer.line);
             break;
         }
         else if(c == ARROW_LEFT && ln_buffer.cursor){
@@ -123,10 +124,12 @@ char* readline(){
                 hist++;
                 if (hist > 0){
                     int idx = history->top - hist + 1;
-                    for(int i = 0; i < previous_buffer_size; i++) delete_char(&ln_buffer);
+                    for(int i = 0; i < previous_buffer_size; i++)
+                        delete_char(&ln_buffer);
                     temp_char = history->base[idx];
                     previous_buffer_size = strlen(temp_char);
-                    for(int i = 0; i < previous_buffer_size; i++) insert_char(&ln_buffer, temp_char[i]);
+                    for(int i = 0; i < previous_buffer_size; i++)
+                        insert_char(&ln_buffer, temp_char[i]);
                 }
             }
         }
@@ -135,10 +138,12 @@ char* readline(){
                 if(hist) hist--;
                 if (hist > 0){
                     int idx = history->top - hist + 1;
-                    for(int i = 0; i < previous_buffer_size; i++) delete_char(&ln_buffer);
+                    for(int i = 0; i < previous_buffer_size; i++)
+                        delete_char(&ln_buffer);
                     temp_char = history->base[idx];
                     previous_buffer_size = strlen(temp_char);
-                    for(int i = 0; i < previous_buffer_size; i++) insert_char(&ln_buffer, temp_char[i]);
+                    for(int i = 0; i < previous_buffer_size; i++)
+                        insert_char(&ln_buffer, temp_char[i]);
                 }
                 else if (!hist) for(int i = 0; i < previous_buffer_size; i++) 
                     delete_char(&ln_buffer);
@@ -147,5 +152,5 @@ char* readline(){
         else if (!iscntrl(c) && c < 128) insert_char(&ln_buffer, c);
         else if (c == BACKSPACE) delete_char(&ln_buffer);
     }
-    return ln_buffer.b;
+    return ln_buffer.line;
 }

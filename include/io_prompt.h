@@ -18,7 +18,7 @@ static size_t buffer_size;
 static struct termios term, old_term;
 
 typedef struct line_buffer{
-    char* b;
+    char* line;
     int len;
     int size;
     int cursor;
