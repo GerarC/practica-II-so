@@ -11,11 +11,12 @@
 #include <unistd.h>
 
 int path_len;
-char *path[PATH_SIZE];
+char** path;
 Stack* history;
 int running;
 
 void shell_initialization(){
+    path = (char**) malloc(sizeof(char)*PATH_SIZE);
     path[0] = (char*)"/bin/";
     path[1] = (char*)"/usr/bin/";
     path[2] = (char*)"/usr/local/bin/";
@@ -40,6 +41,7 @@ int loop(){
         free(cmd_str);
         free_command_struct(command);
     }
+    free(path);
     free_stack(history);
     return running;
 }

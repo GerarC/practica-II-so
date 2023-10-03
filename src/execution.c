@@ -8,6 +8,20 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
+void __seek_command_in_path(char* command, char* command_path, int* fd){
+    char **cmd_path = path;
+    for(int i = 0; i<path_len && (strcmp(*cmd_path, "") != 0) && fd != 0; i++) {
+        strlcpy(command_path, *cmd_path, PATH_SIZE);
+        printf("path: %s, path_len: %i\n", *cmd_path, path_len);
+        int len = strlen(command_path);
+        if(command_path[len - 1] != '/') strlcat(command_path, "/", PATH_SIZE);
+        strlcat(command_path, command, PATH_SIZE);
+        *fd = access(command_path, X_OK);
+        if(*fd == 0) break;
+        cmd_path++;
+    }
+}
+
 void execute_command(Command* command){
         for (int i = 0; i < command->num_cmd; i++) {
             if(!command->argcs[i]) return;
@@ -18,6 +32,10 @@ void execute_command(Command* command){
             else if (!strcmp(command->subcommands[i][0], "cd")) {
                 if (command->argcs[i] < 2) PRINT_ERROR();
                 else change_directory(command->subcommands[i][1]);
+            }
+            else if (!strcmp(command->subcommands[i][0], "path")) {
+                if (command->argcs[i] < 2) PRINT_ERROR();
+                else exec_path(command->subcommands[i][1]);
             } else {
                 if(command->is_redirected[i]) execute_and_redirect_subcommand(
                         command->subcommands[i],
@@ -29,19 +47,12 @@ void execute_command(Command* command){
 
 int execute_subcommand(char** subcommand){
     int fd = -1; 
-    char **cmd_path = path;
     char command_path[PATH_SIZE];
     pid_t subprocess;
 
+    __seek_command_in_path(subcommand[0], command_path, &fd);
 
-    for(int i = 0; i<path_len && (strcmp(*cmd_path, "") != 0) && fd != 0; i++) {
-        strlcpy(command_path, *cmd_path++, PATH_SIZE);
-        int len = strlen(command_path);
-        if(command_path[len - 1] != '/') strlcat(command_path, "/", PATH_SIZE);
-        strlcat(command_path, subcommand[0], PATH_SIZE);
-        fd = access(command_path, X_OK);
-    }
-
+    printf("cmd_path: %s, command: %s,fd: %i\n", command_path, subcommand[0], fd);
     if(fd == 0){
         subprocess = fork();
         if(subprocess == 0) execvp(command_path, subcommand);
@@ -63,20 +74,13 @@ int execute_and_redirect_subcommand(char** subcommand, int argc){
     }
 
     int fd = -1; 
-    char** cmd_path = path;
     char** command_argvs;
     char command_path[PATH_SIZE];
     char* redirect_path;
     pid_t subprocess;
 
 
-    for(int i = 0; i<path_len && (strcmp(*cmd_path, "") != 0) && fd != 0; i++) {
-        strlcpy(command_path, *cmd_path++, PATH_SIZE);
-        int len = strlen(command_path);
-        if(command_path[len - 1] != '/') strlcat(command_path, "/", PATH_SIZE);
-        strlcat(command_path, subcommand[0], PATH_SIZE);
-        fd = access(command_path, X_OK);
-    }
+    __seek_command_in_path(subcommand[0], command_path, &fd);
 
     redirect_path = expand_path(subcommand[argc - 1]);
 
