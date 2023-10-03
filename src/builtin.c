@@ -24,14 +24,12 @@ void change_directory(char *dir) {
 
 void exec_path(char *dir){
     char* real_dir = expand_path(dir);
-    printf("path: %s\n", real_dir);
     if(!is_dir(real_dir)){
         free(real_dir);
         PRINT_ERROR();
         return;
     }
     path[0] = real_dir;
-    printf("path: %s\n", path[0]);
     path[1] = "";
     path[2] = "";
     path_len = 1;

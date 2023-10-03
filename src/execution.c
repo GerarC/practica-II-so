@@ -16,7 +16,6 @@ void __seek_command_in_path(char* command, char* command_path, int* fd){
         if(command_path[len - 1] != '/') strlcat(command_path, "/", DIR_SIZE);
         strlcat(command_path, command, DIR_SIZE);
         *fd = access(command_path, X_OK);
-        printf("cmd_path: %s, path: %s, path_len: %i, fd: %i\n", command_path,*cmd_path, path_len, *fd);
         if(*fd == 0) break;
         cmd_path++;
     }
@@ -52,10 +51,9 @@ int execute_subcommand(char** subcommand){
 
     __seek_command_in_path(subcommand[0], command_path, &fd);
 
-    printf("cmd_path: %s, command: %s,fd: %i\n", command_path, subcommand[0], fd);
     if(fd == 0){
         subprocess = fork();
-        if(subprocess == 0) execvp(command_path, subcommand);
+        if(subprocess == 0) execve(command_path, subcommand, NULL);
         else if(subprocess < 0) PRINT_ERROR();
         else wait(NULL);
     }else PRINT_ERROR();
@@ -100,7 +98,7 @@ int execute_and_redirect_subcommand(char** subcommand, int argc){
                 free(command_argvs);
                 return -1;
             }
-            execvp(command_path, command_argvs);
+            execve(command_path, command_argvs, NULL);
 
             fflush(stdout);
             close(outfile);
