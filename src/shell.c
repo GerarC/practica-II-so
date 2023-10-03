@@ -47,10 +47,7 @@ int loop(int argc, char** argv){
             if (cmd_str[read - 1] == '\n') cmd_str[read - 1] = '\0';
         } else {
             cmd_str = readline();
-            printf("%s\n", cmd_str);
         }
-
-        printf("%s\n", cmd_str);
 
         push(history, cmd_str);
         string_to_command(command, cmd_str);
