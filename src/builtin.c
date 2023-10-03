@@ -22,17 +22,25 @@ void change_directory(char *dir) {
     if (chdir(dir) != 0) PRINT_ERROR();
 }
 
-void exec_path(char *dir){
-    char* real_dir = expand_path(dir);
-    if(!is_dir(real_dir)){
-        free(real_dir);
+void exec_path(char **argv, int argc){
+    if(argc < 2){
         PRINT_ERROR();
         return;
     }
-    path[0] = real_dir;
+    path[0] = "";
     path[1] = "";
     path[2] = "";
-    path_len = 1;
+    path_len = 0;
+    for(int i = 1; i < argc; i++){
+        char* real_dir = expand_path(argv[i]);
+        if(!is_dir(real_dir)){
+            free(real_dir);
+            PRINT_ERROR();
+            return;
+        }
+        path[i] = real_dir;
+    }
+
 }
 
 char* expand_path(char* dir){

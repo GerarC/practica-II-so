@@ -33,8 +33,8 @@ void execute_command(Command* command){
                 else change_directory(command->subcommands[i][1]);
             }
             else if (!strcmp(command->subcommands[i][0], "path")) {
-                if (command->argcs[i] < 2) PRINT_ERROR();
-                else exec_path(command->subcommands[i][1]);
+                if (command->argcs[i] < 2 || command->argcs[i] > 15) PRINT_ERROR();
+                else exec_path(command->subcommands[i], command->argcs[i]);
             } else {
                 if(command->is_redirected[i]) execute_and_redirect_subcommand(
                         command->subcommands[i],
