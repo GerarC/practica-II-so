@@ -48,6 +48,11 @@ char** string_splitter(char* input, int* argc, int* is_redirected,char* sep, int
         amount++;
     }
     *argc = amount;
+
+    if (amount < max_splits) {
+        splitted_str[amount] = NULL;
+    }
+
     free(input_copy);
     return splitted_str;
 }

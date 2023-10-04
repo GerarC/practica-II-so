@@ -18,10 +18,8 @@ int running;
 void shell_initialization(){
     path = (char**) malloc(sizeof(char)*PATH_SIZE);
     path[0] = (char*)"/bin/";
-    path[1] = (char*)"/usr/bin/";
-    path[2] = (char*)"/usr/local/bin/";
     history = init_stack(STACK_SIZE);
-    path_len = 3;
+    path_len = 1;
     running = -1;
 };
 
@@ -38,6 +36,10 @@ int loop(int argc, char** argv){
         return 1;
     }
     if (argc == 2) {
+        if (access(argv[1], F_OK | R_OK) == -1) {
+            PRINT_ERROR();
+            exit(1);
+        }
         input = fopen(argv[1], "r");
         if (!input) {
             PRINT_ERROR();

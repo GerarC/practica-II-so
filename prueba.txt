@@ -1,3 +1,2 @@
-                    
-          echo test variable whitespace!           
+p1.sh
 exit

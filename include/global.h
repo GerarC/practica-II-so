@@ -3,7 +3,7 @@
 
 #include "../include/stack.h"
 
-#define PATH_SIZE 16
+#define PATH_SIZE 256
 #define DIR_SIZE 256
 #define STACK_SIZE 128
 #define DIR_STACK 128
