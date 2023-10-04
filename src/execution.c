@@ -8,21 +8,21 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-void __seek_command_in_path(char* command, char* command_path, int* fd){
+void __seek_command_in_path(char* command, char* command_path, int* cmd_status) {
     char **cmd_path = path;
-    for(int i = 0; i<path_len && (strcmp(*cmd_path, "") != 0) && fd != 0; i++) {
+    for(int i = 0; i < path_len; i++) {
         strlcpy(command_path, *cmd_path, PATH_SIZE);
-        printf("path: %s, path_len: %i\n", *cmd_path, path_len);
         int len = strlen(command_path);
         if(command_path[len - 1] != '/') strlcat(command_path, "/", PATH_SIZE);
         strlcat(command_path, command, PATH_SIZE);
-        *fd = access(command_path, X_OK);
-        if(*fd == 0) break;
+        *cmd_status = access(command_path, X_OK);
+        if(*cmd_status == 0) break;
         cmd_path++;
     }
 }
 
 void execute_command(Command* command){
+
         for (int i = 0; i < command->num_cmd; i++) {
             if(!command->argcs[i]) return;
             if (!strcmp(command->subcommands[i][0], "exit")){
@@ -35,7 +35,10 @@ void execute_command(Command* command){
             }
             else if (!strcmp(command->subcommands[i][0], "path")) {
                 if (command->argcs[i] < 2) PRINT_ERROR();
-                else exec_path(command->subcommands[i][1]);
+                else {
+                    char** paths = command->subcommands[i];
+                    exec_path(paths);
+                }
             } else {
                 if(command->is_redirected[i]) execute_and_redirect_subcommand(
                         command->subcommands[i],
@@ -52,12 +55,17 @@ int execute_subcommand(char** subcommand){
 
     __seek_command_in_path(subcommand[0], command_path, &fd);
 
-    printf("cmd_path: %s, command: %s,fd: %i\n", command_path, subcommand[0], fd);
     if(fd == 0){
         subprocess = fork();
-        if(subprocess == 0) execvp(command_path, subcommand);
-        else if(subprocess < 0) PRINT_ERROR();
-        else wait(NULL);
+        if(subprocess == 0) {
+            execvp(command_path, subcommand);
+        }
+        else if(subprocess < 0) {
+            PRINT_ERROR(); 
+        }
+        else { 
+            wait(NULL); 
+        }
     }else PRINT_ERROR();
 
     return fd;

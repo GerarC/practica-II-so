@@ -5,7 +5,7 @@ name=wish
 src=./src/
 icd=./include/
 build=./build/
-target=$(build)$(name)
+target=$(name)
 
 objs=src/main.o \
 	 $(src)shell.o \

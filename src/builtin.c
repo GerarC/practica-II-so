@@ -22,19 +22,22 @@ void change_directory(char *dir) {
     if (chdir(dir) != 0) PRINT_ERROR();
 }
 
-void exec_path(char *dir){
-    char* real_dir = expand_path(dir);
-    printf("path: %s\n", real_dir);
-    if(!is_dir(real_dir)){
-        free(real_dir);
-        PRINT_ERROR();
-        return;
+void exec_path(char** dirs){
+    path_len = 0;
+
+    for (int i = 0; i < 3; i++) {
+        if (!(dirs[i + 1] && *dirs[i + 1])) {
+            break;
+        }
+        char* real_dir = expand_path(dirs[i + 1]);
+        if (!is_dir(real_dir)) {
+            free(real_dir);
+            PRINT_ERROR();
+            return;
+        }
+        path[path_len] = real_dir;
+        path_len++;
     }
-    path[0] = real_dir;
-    printf("path: %s\n", path[0]);
-    path[1] = "";
-    path[2] = "";
-    path_len = 1;
 }
 
 char* expand_path(char* dir){

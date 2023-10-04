@@ -3,7 +3,7 @@
 
 #include "../include/stack.h"
 
-#define PATH_SIZE 16
+#define PATH_SIZE 256
 #define DIR_SIZE 256
 #define STACK_SIZE 128
 #define DIR_STACK 128
@@ -12,7 +12,7 @@
 #define WORD_SIZE 256
 #define FILE_SIZE CMD_NUM*ARGV_NUM*WORD_SIZE*1024
 #define INPUT_SIZE CMD_NUM*ARGV_NUM*WORD_SIZE
-#define PRINT_ERROR() fprintf(stderr, "An error has ocurred\n")
+#define PRINT_ERROR() fprintf(stderr, "An error has occurred\n")
 
 extern int path_len;
 extern int running;
