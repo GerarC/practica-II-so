@@ -34,10 +34,11 @@ void execute_command(Command* command){
                 else change_directory(command->subcommands[i][1]);
             }
             else if (!strcmp(command->subcommands[i][0], "path")) {
-                if (command->argcs[i] < 2) PRINT_ERROR();
-                else {
-                    char** paths = command->subcommands[i];
-                    exec_path(paths);
+                if(command->argcs[i] < PATH_SIZE)
+                    exec_path(command->subcommands[i], command->argcs[i]);
+                else{
+                    PRINT_ERROR();
+                    return;
                 }
             } else {
                 if(command->is_redirected[i]) execute_and_redirect_subcommand(
