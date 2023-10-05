@@ -3,7 +3,7 @@
 
 #include "../include/global.h"
 
-char* read_file(char* dir);
-void write_file(char* dir, char** lines);
+char* read_from_file(char* dir);
+int execute_from_file(char* dir);
 
 #endif//FILE_H
